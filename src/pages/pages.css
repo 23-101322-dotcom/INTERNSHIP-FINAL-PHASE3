@@ -18,7 +18,7 @@
   object-fit: cover;
   z-index: 0;
   opacity: 1;
-  filter: brightness(1.8) contrast(1.2);
+  filter: brightness(1.2) contrast(1.1) saturate(1.1);
 }
 
 .videoBg {
@@ -87,7 +87,7 @@
 .overlayDark {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.97);
+  background: rgba(0, 0, 0, 0.75);
   z-index: -1;
 }
 
@@ -758,7 +758,7 @@ button, input { font-family: 'Rajdhani', sans-serif; }
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  background: #0E2130 !important;
+  background: #0E2130 ;
 }
 
 .levelInfo          { flex: 1; }
@@ -787,7 +787,7 @@ button, input { font-family: 'Rajdhani', sans-serif; }
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background: #000;
+  background: transparent;
   position: relative;
   z-index: 5;
 }
@@ -990,7 +990,7 @@ button, input { font-family: 'Rajdhani', sans-serif; }
 .completePage {
   width: 100%;
   height: 100vh;
-  background: #000;
+  background: transparent;
   display: flex;
   flex-direction: column;
   position: relative;
@@ -1154,7 +1154,7 @@ button, input { font-family: 'Rajdhani', sans-serif; }
 .briefPage {
   width: 100%;
   height: 100vh;
-  background: #000;
+  background: transparent;
   display: flex;
   flex-direction: column;
   position: relative;
@@ -1277,7 +1277,7 @@ button, input { font-family: 'Rajdhani', sans-serif; }
 .netPage {
   width: 100%;
   height: 100vh;
-  background: #000;
+  background: transparent;
   display: flex;
   flex-direction: column;
   position: relative;
@@ -1352,7 +1352,7 @@ button, input { font-family: 'Rajdhani', sans-serif; }
 
 .netNodeActive {
   background: rgba(14,33,48,0.95) ;
-  border-color: rgba(100,160,220,0.3);
+  border-color: rgba(100,160,220,0.3) ;
 }
 
 .netNodeItemIcon {
@@ -1364,7 +1364,6 @@ button, input { font-family: 'Rajdhani', sans-serif; }
 .netNodeItemIp    { font-size: 13px; color: rgba(100,160,220,0.8); font-family: monospace; margin-bottom: 2px; }
 .netNodeItemLabel { font-size: 14px; color: rgba(255,255,255,0.8); }
 .netNodeRecovered { font-size: 12px; color: #22c55e; margin-top: 4px; }
-
 
 .netMain {
   flex: 1;
@@ -1501,7 +1500,7 @@ button, input { font-family: 'Rajdhani', sans-serif; }
 .vaultPage {
   width: 100%;
   height: 100vh;
-  background: #000;
+  background: transparent;
   display: flex;
   flex-direction: column;
   position: relative;
@@ -1786,7 +1785,7 @@ button, input { font-family: 'Rajdhani', sans-serif; }
 .failurePage {
   width: 100%;
   height: 100vh;
-  background: #000;
+  background: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1867,4 +1866,355 @@ button, input { font-family: 'Rajdhani', sans-serif; }
   background: rgba(180,30,30,0.95);
   border-color: rgba(239,68,68,0.6);
   transform: scale(1.02);
+}
+
+
+
+.sigPage {
+  width: 100%;
+  height: 100vh;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 5;
+  overflow: hidden;
+}
+
+.sigStageBar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  padding: 16px 40px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  flex-shrink: 0;
+}
+
+.sigStageStep {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 24px;
+  font-size: 14px;
+  color: rgba(255,255,255,0.3);
+  position: relative;
+  transition: 0.3s;
+}
+
+.sigStageStep::after {
+  content: '——';
+  position: absolute;
+  right: -16px;
+  color: rgba(255,255,255,0.1);
+  font-size: 12px;
+}
+.sigStageStep:last-child::after { display: none; }
+
+.sigStageActive { color: #c4b5fd ; }
+.sigStageDone   { color: #22c55e ; }
+
+.sigStageNum {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255,255,255,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  flex-shrink: 0;
+  transition: 0.3s;
+}
+
+.sigStageActive .sigStageNum {
+  border-color: #a78bfa;
+  background: rgba(120,80,255,0.15);
+  color: #c4b5fd;
+}
+.sigStageDone .sigStageNum {
+  border-color: #22c55e;
+  background: rgba(34,197,94,0.1);
+  color: #22c55e;
+}
+
+.sigStageContent {
+  flex: 1;
+  overflow-y: auto;
+  padding: 28px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.sigStageTitle h2 {
+  font-size: clamp(20px,3vw,30px);
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 6px;
+}
+.sigStageTitle p {
+  font-size: 15px;
+  color: rgba(210,225,240,0.55);
+  line-height: 1.6;
+}
+
+.sigFreqGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.sigFreqCard {
+  background: rgba(10,12,24,0.85);
+  border: 1px solid rgba(120,80,255,0.15);
+  border-radius: 16px;
+  padding: 18px;
+  transition: 0.2s;
+}
+
+.sigFreqSolved {
+  border-color: rgba(34,197,94,0.35) ;
+  background: rgba(10,30,18,0.85) ;
+}
+
+.sigFreqLabel {
+  font-family: monospace;
+  font-size: 14px;
+  color: #a78bfa;
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+
+.sigWavePreview {
+  width: 100%;
+  height: 40px;
+  margin-bottom: 12px;
+}
+
+.sigWavePreview svg {
+  width: 100%;
+  height: 100%;
+}
+
+.sigFreqOptions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.sigFreqOpt {
+  background: rgba(20,15,45,0.8);
+  border: 1px solid rgba(120,80,255,0.2);
+  border-radius: 8px;
+  color: rgba(200,190,240,0.8);
+  font-size: 12px;
+  padding: 7px 4px;
+  cursor: pointer;
+  transition: 0.15s;
+  font-family: 'Rajdhani', sans-serif;
+  text-transform: capitalize;
+}
+
+.sigFreqOpt:hover { background: rgba(40,25,80,0.9); border-color: #a78bfa; }
+
+.sigFreqWrong {
+  border-color: #ef4444 ;
+  background: rgba(40,10,10,0.9) ;
+  color: #ef4444 ;
+  animation: shakeX 0.4s ease;
+}
+
+.sigFreqCorrect {
+  font-size: 13px;
+  color: #22c55e;
+  font-weight: 600;
+  text-align: center;
+  padding: 6px;
+}
+
+@keyframes shakeX {
+  0%,100% { transform: translateX(0); }
+  25%      { transform: translateX(-6px); }
+  75%      { transform: translateX(6px); }
+}
+
+.sigHint {
+  font-size: 13px;
+  color: rgba(167,139,250,0.5);
+  text-align: center;
+  font-style: italic;
+  padding: 8px;
+}
+
+.sigCipherBox {
+  background: rgba(10,12,24,0.85);
+  border: 1px solid rgba(120,80,255,0.15);
+  border-radius: 18px;
+  padding: 28px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 760px;
+}
+
+.sigCipherLabel {
+  font-size: 13px;
+  color: rgba(255,255,255,0.35);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.sigCipherText {
+  font-family: monospace;
+  font-size: clamp(14px,2vw,18px);
+  color: #c4b5fd;
+  letter-spacing: 3px;
+  line-height: 1.8;
+  background: rgba(20,15,50,0.6);
+  border-radius: 10px;
+  padding: 16px 20px;
+  word-break: break-all;
+}
+
+.sigCipherHint {
+  font-size: 14px;
+  color: rgba(200,190,240,0.5);
+  line-height: 1.6;
+  border-left: 2px solid rgba(120,80,255,0.3);
+  padding-left: 12px;
+}
+
+.sigCipherInput {
+  background: rgba(15,12,35,0.9);
+  border: 1.5px solid rgba(120,80,255,0.3);
+  border-radius: 12px;
+  color: #fff;
+  font-size: 16px;
+  padding: 14px 18px;
+  font-family: monospace;
+  letter-spacing: 2px;
+  transition: border-color 0.2s;
+  outline: none;
+}
+
+.sigCipherInput:focus { border-color: #a78bfa; }
+
+.sigCipherInputError {
+  border-color: #ef4444 ;
+  animation: shakeX 0.4s ease;
+}
+
+.sigCipherError {
+  font-size: 14px;
+  color: #ef4444;
+  font-weight: 600;
+}
+
+.sigCipherSuccess {
+  font-size: 16px;
+  color: #22c55e;
+  font-weight: 600;
+  padding: 12px 0;
+  font-family: monospace;
+  letter-spacing: 1px;
+}
+
+.sigCoordBox {
+  background: rgba(10,12,24,0.85);
+  border: 1px solid rgba(120,80,255,0.15);
+  border-radius: 18px;
+  padding: 28px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 760px;
+}
+
+.sigCoordHint {
+  font-size: 14px;
+  color: rgba(200,190,240,0.55);
+  line-height: 1.6;
+}
+
+.sigCoordFrags {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.sigCoordFrag {
+  background: rgba(20,15,50,0.85);
+  border: 1.5px solid rgba(120,80,255,0.25);
+  border-radius: 12px;
+  padding: 14px 20px;
+  font-family: monospace;
+  font-size: clamp(14px,2vw,20px);
+  color: #c4b5fd;
+  cursor: pointer;
+  transition: 0.2s;
+  user-select: none;
+  letter-spacing: 1px;
+}
+
+.sigCoordFrag:hover { border-color: #a78bfa; background: rgba(40,25,80,0.9); }
+
+.sigCoordSelected {
+  border-color: #f59e0b ;
+  background: rgba(40,30,10,0.9) ;
+  color: #fbbf24 ;
+  transform: scale(1.05);
+}
+
+.sigCoordCorrect {
+  border-color: rgba(34,197,94,0.5) ;
+  color: #22c55e ;
+}
+
+.sigCoordProgress {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.sigCoordDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.15);
+  transition: 0.3s;
+}
+
+.sigCoordDotOk {
+  background: #22c55e;
+  border-color: #22c55e;
+}
+
+.briefToolNum {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(120,80,255,0.15);
+  border: 1px solid rgba(120,80,255,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: #a78bfa;
+  flex-shrink: 0;
+}
+
+@media (max-width: 900px) {
+  .sigFreqGrid  { grid-template-columns: repeat(2, 1fr); }
+  .sigCoordFrags { gap: 8px; }
+  .sigCipherText { font-size: 12px; letter-spacing: 1px; }
+}
+
+@media (max-width: 600px) {
+  .sigFreqGrid  { grid-template-columns: 1fr 1fr; }
+  .sigStageBar  { padding: 12px 16px; gap: 0; }
+  .sigStageStep { padding: 8px 12px; font-size: 12px; }
 }

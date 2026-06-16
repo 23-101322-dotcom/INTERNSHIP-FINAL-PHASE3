@@ -27,14 +27,14 @@ const MAILS = [
   { sender:'Marcus Thompson',     subject:'Did you hear that?',               preview:'I was outside the facility around midnight…',                        time:'Jan 8',      unread: false },
 ];
 const GALLERY = [
-  { label:'At the lab – last normal day',                   date:'Jan 16', emoji:'🔬' },
-  { label:'Dinner with the team before everything changed', date:'Jan 14', emoji:'🍽️' },
-  { label:'With Marcus and Emma – they heard it too',       date:'Jan 12', emoji:'📸' },
-  { label:'Research team – analyzing the frequencies',      date:'Jan 10', emoji:'📊' },
-  { label:'Ocean view – before the storm',                  date:'Jan 8',  emoji:'🌊' },
-  { label:'Something in the dark',                          date:'Jan 7',  emoji:'🌑' },
-  { label:'The light beneath the water',                    date:'Jan 6',  emoji:'💡' },
-  { label:'Dr. Hayes at the chalkboard',                    date:'Jan 5',  emoji:'📝' },
+  { label:'At the lab – last normal day',                   date:'Jan 16', emoji:'' },
+  { label:'Dinner with the team before everything changed', date:'Jan 14', emoji:'' },
+  { label:'With Marcus and Emma – they heard it too',       date:'Jan 12', emoji:'' },
+  { label:'Research team – analyzing the frequencies',      date:'Jan 10', emoji:'' },
+  { label:'Ocean view – before the storm',                  date:'Jan 8',  emoji:'' },
+  { label:'Something in the dark',                          date:'Jan 7',  emoji:'' },
+  { label:'The light beneath the water',                    date:'Jan 6',  emoji:'' },
+  { label:'Dr. Hayes at the chalkboard',                    date:'Jan 5',  emoji:'' },
 ];
 const FEED = [
   { id:'M', name:'Marcus Thompson',    date:'3 days ago', likes:12,  comments:8,  text:"Anyone else hearing strange sounds at night near the research facility?" },
@@ -118,22 +118,40 @@ const VALVES_INIT = [
   { id:'E', label:'Valve E', zone:'Stabilizer Line',    current:4, target:6, min:0, max:8 },
 ];
 
+const FREQ_PULSES = [
+  { id:0, label:"0.047 Hz", correct:"sine",     options:["sine","square","sawtooth","noise"] },
+  { id:1, label:"0.094 Hz", correct:"square",   options:["sine","square","sawtooth","noise"] },
+  { id:2, label:"0.141 Hz", correct:"noise",    options:["sine","square","sawtooth","noise"] },
+  { id:3, label:"0.188 Hz", correct:"sawtooth", options:["sine","square","sawtooth","noise"] },
+  { id:4, label:"0.235 Hz", correct:"sine",     options:["square","sine","noise","sawtooth"] },
+  { id:5, label:"0.282 Hz", correct:"square",   options:["noise","sawtooth","square","sine"] },
+];
+const CIPHER_TEXT  = "VKHMHOHU LV OLVWHQLQJ. VDUD IRXQG WKH VRXUFH.";
+const CIPHER_ANSWER = "WHATEVER IS LISTENING. SARA FOUND THE SOURCE.";
+const COORD_FRAGS = [
+  { id:0, text:"LAT 68",   pos:0 },
+  { id:1, text:".4471 N",  pos:1 },
+  { id:2, text:" LON 14",  pos:2 },
+  { id:3, text:".2293",    pos:3 },
+  { id:4, text:" E",       pos:4 },
+];
+
 const PHONE_APPS = [
-  { icon:'💬', label:'Messages' }, { icon:'📞', label:'Phone' },
-  { icon:'✉️', label:'Mail' },     { icon:'🖼️', label:'Gallery' },
-  { icon:'📷', label:'Social Feed' }, { icon:'📖', label:'Diary' },
-  { icon:'🗂️', label:'Research Files' }, { icon:'⚙️', label:'Settings' },
+  { icon:'', label:'Messages' }, { icon:'', label:'Phone' },
+  { icon:'', label:'Mail' },     { icon:'', label:'Gallery' },
+  { icon:'', label:'Social Feed' }, { icon:'', label:'Diary' },
+  { icon:'', label:'Research Files' }, { icon:'', label:'Settings' },
 ];
 const ACCOUNT_SETTINGS = [
-  { icon:'👤', label:'Profile',  sub:'Sara Rodriguez' },
-  { icon:'🔒', label:'Security', sub:'2FA Enabled'    },
+  { icon:'', label:'Profile', sub:'Sara Rodriguez' },
+  { icon:'', label:'Security', sub:'2FA Enabled' },
 ];
 const SYSTEM_SETTINGS = [
-  { icon:'🔔', label:'Notifications', sub:'All enabled' },
-  { icon:'🌙', label:'Dark Mode',     sub:'Always on'   },
-  { icon:'🔊', label:'Sound',         sub:'Maximum'     },
-  { icon:'📶', label:'Network',       sub:'Research Facility LAN' },
-  { icon:'🔋', label:'Battery',       sub:'87%' },
+  { icon:'', label:'Notifications', sub:'All enabled' },
+  { icon:'', label:'Dark Mode', sub:'Always on' },
+  { icon:'', label:'Sound', sub:'Maximum' },
+  { icon:'', label:'Network', sub:'Research Facility LAN' },
+  { icon:'', label:'Battery', sub:'87%' },
 ];
 
 const S = {
@@ -145,15 +163,16 @@ const S = {
   LVL2BRIEF:16, LVL2PLAY:17, LVL2DONE:18,
   LVL3BRIEF:19, LVL3PLAY:20, LVL3DONE:21,
   FAILURE:22,
+  LVL4BRIEF:23, LVL4PLAY:24, LVL4DONE:25,
 };
 
-const LEVEL_TIMES = { 14:120, 17:180, 20:150 };
+const LEVEL_TIMES = { 14:120, 17:180, 20:150, 24:240 };
 const APP_SCREEN_MAP = {
   'Messages':S.MESSAGES,'Phone':S.CALLS,'Mail':S.MAIL,'Gallery':S.GALLERY,
   'Social Feed':S.SOCIAL,'Diary':S.DIARY,'Research Files':S.RESEARCH,'Settings':S.SETTINGS,
 };
-const CALL_ICON = { missed:'📵', received:'📲', outgoing:'📤' };
-const RESEARCH_ICON = { warn:'⚠️', trend:'📈', doc:'📄' };
+const CALL_ICON = { missed:'Missed', received:'Incoming', outgoing:'Outgoing' };
+const RESEARCH_ICON = { warn:'!', trend:'~', doc:'#' };
 const RESEARCH_CLASS = { warn:'researchWarn', trend:'researchTrend', doc:'researchDoc' };
 
 function LevelIcon({ type, bg }) {
@@ -233,7 +252,7 @@ export default function CallOfTheOcean() {
   };
 
   useEffect(() => {
-    const playScreens = [S.LVL1PLAY, S.LVL2PLAY, S.LVL3PLAY];
+    const playScreens = [S.LVL1PLAY, S.LVL2PLAY, S.LVL3PLAY, S.LVL4PLAY];
     if (!playScreens.includes(screen)) stopTimer();
   }, [screen]);
 
@@ -252,6 +271,67 @@ export default function CallOfTheOcean() {
       });
       const allDone = next.every(v => v.current === v.target);
       if (allDone) { stopTimer(); setTimeout(() => goTo(S.LVL3DONE), 600); }
+      return next;
+    });
+  };
+
+  const [lvl4Stage, setLvl4Stage]           = useState(0); 
+  const [freqAnswers, setFreqAnswers]        = useState({});
+  const [freqWrong, setFreqWrong]            = useState({});
+  const [cipherInput, setCipherInput]        = useState('');
+  const [cipherError, setCipherError]        = useState(false);
+  const [cipherSolved, setCipherSolved]      = useState(false);
+  const [coordOrder, setCoordOrder]          = useState([0,1,2,3,4]);
+  const [dragging, setDragging]              = useState(null);
+  const [coordSolved, setCoordSolved]        = useState(false);
+
+  const startLevel4 = () => {
+    setLvl4Stage(0);
+    setFreqAnswers({});
+    setFreqWrong({});
+    setCipherInput('');
+    setCipherError(false);
+    setCipherSolved(false);
+    setCoordOrder([2,0,4,1,3]); 
+    setDragging(null);
+    setCoordSolved(false);
+    goTo(S.LVL4BRIEF);
+  };
+
+  const handleFreqPick = (pulseId, choice) => {
+    const pulse = FREQ_PULSES[pulseId];
+    if (freqAnswers[pulseId] === pulse.correct) return;
+    if (choice === pulse.correct) {
+      const next = { ...freqAnswers, [pulseId]: choice };
+      setFreqAnswers(next);
+      setFreqWrong(prev => { const p = { ...prev }; delete p[pulseId]; return p; });
+      if (Object.keys(next).length === FREQ_PULSES.length) {
+        setTimeout(() => setLvl4Stage(1), 600);
+      }
+    } else {
+      setFreqWrong(prev => ({ ...prev, [pulseId]: choice }));
+    }
+  };
+
+  const handleCipherSubmit = () => {
+    if (cipherInput.trim().toUpperCase() === CIPHER_ANSWER) {
+      setCipherSolved(true);
+      setCipherError(false);
+      setTimeout(() => setLvl4Stage(2), 700);
+    } else {
+      setCipherError(true);
+      setTimeout(() => setCipherError(false), 1200);
+    }
+  };
+
+  const moveCoord = (fromIdx, toIdx) => {
+    setCoordOrder(prev => {
+      const next = [...prev];
+      const tmp = next[fromIdx];
+      next[fromIdx] = next[toIdx];
+      next[toIdx] = tmp;
+      const correct = next.every((id, i) => COORD_FRAGS[id].pos === i);
+      if (correct) { stopTimer(); setTimeout(() => goTo(S.LVL4DONE), 700); setCoordSolved(true); }
       return next;
     });
   };
@@ -328,7 +408,7 @@ export default function CallOfTheOcean() {
 
       <div className={`screen${screen === S.HEADPHONES ? ' screenActive' : ''}`}>
         <div className="overlay1" />
-        <div className="toast"><span className="toastIcon">🚀</span><div><div className="toastTitle">Game Mode: On</div><div className="toastSub">Access Game Overlay in Control Center</div></div></div>
+        <div className="toast"><div><div className="toastTitle">Game Mode: On</div><div className="toastSub">Access Game Overlay in Control Center</div></div></div>
         <div className="headphones"><img src={headphonesImg} alt="headphones" /></div>
         <h1 className="headline">Use headphones for a<br />better experience</h1>
         <button className="btnOutline" onClick={() => goTo(S.TITLE)}>CONTINUE →</button>
@@ -383,7 +463,7 @@ export default function CallOfTheOcean() {
         <div className="overlayDark" />
         <div className="subPage">
           <div className="pageHeader"><button className="backBtn" onClick={() => goTo(S.PHONE)}>←</button><h1>Messages</h1></div>
-          <input className="msgSearch" placeholder="🔍 Search conversations..." readOnly />
+          <input className="msgSearch" placeholder="Search conversations..." readOnly />
           <div className="msgList">
             {MESSAGES.map((m, i) => (
               <div key={i} className="msgItem">
@@ -406,7 +486,7 @@ export default function CallOfTheOcean() {
                 <div className="msgAvatar">{c.id}</div>
                 <span className={`callIcon ${c.type==='missed'?'callMissed':c.type==='received'?'callReceived':'callOutgoing'}`}>{CALL_ICON[c.type]}</span>
                 <div className="callInfo"><h3 className={c.type==='missed'?'missedName':''}>{c.name}{c.count?` (${c.count})`:''}</h3><p>{c.time}</p></div>
-                <button className="callBtn">📞</button>
+                <button className="callBtn">Call</button>
               </div>
             ))}
           </div>
@@ -417,11 +497,11 @@ export default function CallOfTheOcean() {
         <div className="overlayDark" />
         <div className="subPage">
           <div className="pageHeader"><button className="backBtn" onClick={() => goTo(S.PHONE)}>←</button><h1>Mail</h1></div>
-          <input className="mailSearch" placeholder="🔍 Search emails..." readOnly />
+          <input className="mailSearch" placeholder="Search emails..." readOnly />
           <div className="mailList">
             {MAILS.map((m, i) => (
               <div key={i} className="mailItem">
-                <div className="mailIconBox">✉️</div>
+                <div className="mailIconBox"></div>
                 <div className="mailBody"><h3>{m.sender}</h3><h4>{m.subject}</h4><p>{m.preview}</p></div>
                 <div className="mailMeta"><span className="mailTime">{m.time}</span>{m.unread && <span className="mailDot" />}</div>
               </div>
@@ -451,7 +531,7 @@ export default function CallOfTheOcean() {
               <div key={i} className="feedPost">
                 <div className="feedAuthor"><div className="feedAvatar">{f.id}</div><div><div className="feedName">{f.name}</div><div className="feedDate">{f.date}</div></div></div>
                 <p className="feedText">{f.text}</p>
-                <div className="feedActions"><span className="feedAction">👍 {f.likes}</span><span className="feedAction">💬 {f.comments}</span><span className="feedAction">↗️ Share</span></div>
+                <div className="feedActions"><span className="feedAction">{f.likes} Likes</span><span className="feedAction">{f.comments} Comments</span><span className="feedAction">Share</span></div>
               </div>
             ))}
           </div>
@@ -464,7 +544,7 @@ export default function CallOfTheOcean() {
           <div className="pageHeader"><button className="backBtn" onClick={() => goTo(S.PHONE)}>←</button><h1>Sara's Diary</h1></div>
           <div className="diaryList">
             {DIARY.map((d, i) => (
-              <div key={i} className="diaryEntry"><div className="diaryDateRow">🔒 {d.date}</div><h3>{d.title}</h3><p>{d.text}</p></div>
+              <div key={i} className="diaryEntry"><div className="diaryDateRow">{d.date}</div><h3>{d.title}</h3><p>{d.text}</p></div>
             ))}
           </div>
         </div>
@@ -497,7 +577,7 @@ export default function CallOfTheOcean() {
                   <div key={i} className="settingsItem">
                     <div className="settingsItemIcon">{item.icon}</div>
                     <div><h3>{item.label}</h3><p>{item.sub}</p></div>
-                    <span className="settingsArrow">›</span>
+                    <span className="settingsArrow">></span>
                   </div>
                 ))}
               </div>
@@ -518,6 +598,7 @@ export default function CallOfTheOcean() {
                   if (lv.num === 1) startLevel1();
                   if (lv.num === 2) startLevel2();
                   if (lv.num === 3) startLevel3();
+                  if (lv.num === 4) startLevel4();
                 }}>
                 <LevelIcon type={lv.iconType} bg={lv.bgColor} />
                 <div className="levelInfo">
@@ -545,13 +626,14 @@ export default function CallOfTheOcean() {
 
       <div className={`screen${screen === S.LVL1PLAY ? ' screenActive' : ''}`}>
         <div className="lvlPage">
+          <div className="overlayDark" />
           <StatusBar />
           <div className="lvlTopbar">
             <div className="lvlTitleBlock">
               <button className="backBtn" onClick={() => goTo(S.LEVELS)}>←</button>
               <div><h1>Level 1: Sara's Office</h1><p>Click objects to find evidence</p></div>
             </div>
-            <div className="lvlTopRight"><div className="lvlCounter"><span>Evidence Found</span><strong>{foundEvidence.length}/5</strong></div><div className={`timerBox${timeLeft <= 30 ? " timerDanger" : ""}`}><span>⏱</span><strong>{formatTime(timeLeft)}</strong></div></div>
+            <div className="lvlTopRight"><div className="lvlCounter"><span>Evidence Found</span><strong>{foundEvidence.length}/5</strong></div><div className={`timerBox${timeLeft <= 30 ? " timerDanger" : ""}`}><strong>{formatTime(timeLeft)}</strong></div></div>
           </div>
           <div className="lvlDivider" />
           <div className="lvlScene">
@@ -591,6 +673,7 @@ export default function CallOfTheOcean() {
       </div>
 
       <div className={`screen${screen === S.LVL1DONE ? ' screenActive' : ''}`}>
+          <div className="overlayDark" />
         <div className="completePage">
           <StatusBar />
           <div className="completeTopbar">
@@ -614,6 +697,7 @@ export default function CallOfTheOcean() {
         </div>
       </div>
 
+          <div className="overlayDark" />
       <div className={`screen${screen === S.LVL2BRIEF ? ' screenActive' : ''}`}>
         <div className="briefPage">
           <StatusBar />
@@ -630,21 +714,21 @@ export default function CallOfTheOcean() {
               <p><span className="briefAlert">ALERT:</span> At 03:14 AM, an unauthorized user breached the research facility's secure network. Classified oceanographic data, research files, and Sara's investigation notes were stolen. You must trace the digital footprint, identify the hacker, and recover the stolen information.</p>
               <div className="briefTools">
                 <div className="briefTool">
-                  <span className="briefToolIcon">⌨️</span>
+                  
                   <div><strong>Server Logs</strong><p>Analyze system access records</p></div>
                 </div>
                 <div className="briefTool">
-                  <span className="briefToolIcon">📡</span>
+                  
                   <div><strong>Network Traffic</strong><p>Track suspicious connections</p></div>
                 </div>
                 <div className="briefTool">
-                  <span className="briefToolIcon">🗄️</span>
+                  
                   <div><strong>Stolen Files</strong><p>Identify compromised data</p></div>
                 </div>
               </div>
             </div>
             <div className="briefObjective">
-              <div className="briefObjTitle">🛡️ Objective</div>
+              <div className="briefObjTitle">Objective</div>
             </div>
             <div className="briefActions">
               <button className="btnContinue" onClick={() => { goTo(S.LVL2PLAY); setTimeout(() => startTimer(S.LVL2PLAY), 400); }}>Start Investigation</button>
@@ -654,6 +738,7 @@ export default function CallOfTheOcean() {
         </div>
       </div>
 
+          <div className="overlayDark" />
       <div className={`screen${screen === S.LVL2PLAY ? ' screenActive' : ''}`}>
         <div className="netPage">
           <StatusBar />
@@ -662,14 +747,14 @@ export default function CallOfTheOcean() {
               <button className="backBtn" onClick={() => goTo(S.LEVELS)}>←</button>
               <div><h1>Network Trace</h1><p>Follow the hacker's digital trail</p></div>
             </div>
-            <div className="lvlTopRight"><div className="netCounter"><span>Files Recovered</span><strong>{netRecovered.length}/{TOTAL_FILES}</strong></div><div className={`timerBox${timeLeft <= 30 ? " timerDanger" : ""}`}><span>⏱</span><strong>{formatTime(timeLeft)}</strong></div></div>
+            <div className="lvlTopRight"><div className="netCounter"><span>Files Recovered</span><strong>{netRecovered.length}/{TOTAL_FILES}</strong></div><div className={`timerBox${timeLeft <= 30 ? " timerDanger" : ""}`}><strong>{formatTime(timeLeft)}</strong></div></div>
           </div>
           <div className="lvlDivider" />
 
           <div className="netLayout">
             <div className="netSidebar">
               <div className="netMapTitle">
-                <span className="netMapIcon">〜</span> Network Map
+                 Network Map
               </div>
               <div className="netNodeList">
                 {netDiscovered.map(id => {
@@ -744,6 +829,7 @@ export default function CallOfTheOcean() {
           </div>
         </div>
       </div>
+          <div className="overlayDark" />
 
       <div className={`screen${screen === S.LVL2DONE ? ' screenActive' : ''}`}>
         <div className="completePage">
@@ -762,6 +848,7 @@ export default function CallOfTheOcean() {
           </div>
         </div>
       </div>
+          <div className="overlayDark" />
 
 
       <div className={`screen${screen === S.LVL3BRIEF ? ' screenActive' : ''}`}>
@@ -780,27 +867,28 @@ export default function CallOfTheOcean() {
               <p><span className="briefAlert">CRITICAL:</span> You have infiltrated the underwater structure 847 meters below sea level. The pressure system is destabilizing — if the valves aren't corrected, the entire chamber will collapse. Adjust all 5 valves to their target pressure levels before it's too late.</p>
               <div className="briefTools">
                 <div className="briefTool">
-                  <span className="briefToolIcon">🔧</span>
+                  
                   <div><strong>Valve Control</strong><p>Adjust pressure manually</p></div>
                 </div>
                 <div className="briefTool">
-                  <span className="briefToolIcon">📊</span>
+                  
                   <div><strong>Pressure Monitor</strong><p>Track real-time readings</p></div>
                 </div>
                 <div className="briefTool">
-                  <span className="briefToolIcon">⚠️</span>
+                  
                   <div><strong>Warning System</strong><p>Critical alerts active</p></div>
                 </div>
               </div>
             </div>
             <div className="briefObjective" style={{ borderColor:'rgba(239,68,68,0.2)' }}>
-              <div className="briefObjTitle" style={{ color:'#ef4444' }}>⚠️ Set all 5 valves to their target pressure levels</div>
+              <div className="briefObjTitle" style={{ color:'#ef4444' }}>Set all 5 valves to their target pressure levels</div>
             </div>
             <div className="briefActions">
               <button className="btnContinue" onClick={() => { goTo(S.LVL3PLAY); setTimeout(() => startTimer(S.LVL3PLAY), 400); }}>Enter The Underground</button>
               <button className="btnMissions" onClick={() => goTo(S.LEVELS)}>Back to Missions</button>
             </div>
           </div>
+          <div className="overlayDark" />
         </div>
       </div>
 
@@ -812,14 +900,14 @@ export default function CallOfTheOcean() {
               <button className="backBtn" onClick={() => goTo(S.LEVELS)}>←</button>
               <div><h1>The Underground</h1><p>847m below sea level — stabilize the pressure system</p></div>
             </div>
-            <div className="lvlTopRight"><div className="netCounter"><span>Valves Stabilized</span><strong>{valves.filter(v => v.current === v.target).length}/5</strong></div><div className={`timerBox${timeLeft <= 30 ? " timerDanger" : ""}`}><span>⏱</span><strong>{formatTime(timeLeft)}</strong></div></div>
+            <div className="lvlTopRight"><div className="netCounter"><span>Valves Stabilized</span><strong>{valves.filter(v => v.current === v.target).length}/5</strong></div><div className={`timerBox${timeLeft <= 30 ? " timerDanger" : ""}`}><strong>{formatTime(timeLeft)}</strong></div></div>
           </div>
           <div className="lvlDivider" />
 
           <div className="vaultLayout">
             <div className="vaultSidebar">
               <div className="netMapTitle">
-                <span style={{ color:'#ef4444' }}>⚠</span> Pressure Valves
+                Pressure Valves
               </div>
               <div className="netNodeList">
                 {valves.map((v, i) => {
@@ -935,6 +1023,7 @@ export default function CallOfTheOcean() {
                 );
               })()}
             </div>
+          <div className="overlayDark" />
           </div>
         </div>
       </div>
@@ -959,6 +1048,7 @@ export default function CallOfTheOcean() {
               <button className="btnContinue" onClick={() => goTo(S.LEVELS)}>Continue to Level 4</button>
               <button className="btnMissions" onClick={() => goTo(S.LEVELS)}>Back to Missions</button>
             </div>
+          <div className="overlayDark" />
           </div>
         </div>
       </div>
@@ -967,12 +1057,13 @@ export default function CallOfTheOcean() {
       <div className={`screen${screen === S.FAILURE ? ' screenActive' : ''}`}>
         <div className="failurePage">
           <div className="failureBody">
-            <div className="failureIcon">⏱</div>
+            <div className="failureIcon"></div>
             <h1 className="failureTitle">Mission Failed</h1>
             <p className="failureSub">
               {failedLevel === S.LVL1PLAY && 'You ran out of time searching Sara\'s office. The evidence went cold.'}
               {failedLevel === S.LVL2PLAY && 'The hacker erased their trail before you could trace it. The breach went unsolved.'}
               {failedLevel === S.LVL3PLAY && 'The pressure system collapsed. The underwater chamber is sealed forever.'}
+              {failedLevel === S.LVL4PLAY && 'The signal went silent. The frequency vanished before you could decode it.'}
             </p>
             <div className="failureCard">
               <p>The ocean keeps its secrets. But every detective gets another chance…</p>
@@ -982,7 +1073,238 @@ export default function CallOfTheOcean() {
                 if (failedLevel === S.LVL1PLAY) startLevel1();
                 if (failedLevel === S.LVL2PLAY) { startLevel2(); setTimeout(() => { goTo(S.LVL2PLAY); setTimeout(() => startTimer(S.LVL2PLAY), 400); }, 400); }
                 if (failedLevel === S.LVL3PLAY) { startLevel3(); setTimeout(() => { goTo(S.LVL3PLAY); setTimeout(() => startTimer(S.LVL3PLAY), 400); }, 400); }
-              }}>↺ Try Again</button>
+                if (failedLevel === S.LVL4PLAY) { startLevel4(); setTimeout(() => { goTo(S.LVL4PLAY); setTimeout(() => startTimer(S.LVL4PLAY), 400); }, 400); }
+              }}>Try Again</button>
+              <button className="btnMissions" onClick={() => goTo(S.LEVELS)}>Back to Missions</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div className={`screen${screen === S.LVL4BRIEF ? ' screenActive' : ''}`}>
+        <div className="briefPage">
+          <StatusBar />
+          <div className="overlayDark" />
+          <div className="briefBody">
+            <div className="briefIcon" style={{ background:'rgba(20,15,50,0.95)', border:'1px solid rgba(120,80,255,0.3)' }}>
+              <svg width="60" height="60" viewBox="0 0 36 36" fill="none">
+                <circle cx="18" cy="18" r="3" fill="rgba(180,140,255,0.9)"/>
+                <path d="M11 11 A10 10 0 0 0 11 25" stroke="rgba(180,140,255,0.8)" strokeWidth="2" strokeLinecap="round"/>
+                <path d="M25 11 A10 10 0 0 1 25 25" stroke="rgba(180,140,255,0.8)" strokeWidth="2" strokeLinecap="round"/>
+                <path d="M6 6 A17 17 0 0 0 6 30"   stroke="rgba(180,140,255,0.5)" strokeWidth="2" strokeLinecap="round"/>
+                <path d="M30 6 A17 17 0 0 1 30 30"  stroke="rgba(180,140,255,0.5)" strokeWidth="2" strokeLinecap="round"/>
+              </svg>
+            </div>
+            <h1 className="briefTitle" style={{ color:'#c4b5fd' }}>Level 4</h1>
+            <h2 className="briefSubtitle">The Final Signal</h2>
+            <div className="briefCard">
+              <h3>Mission Brief</h3>
+              <p>
+                <span className="briefAlert" style={{ color:'#a78bfa' }}>INCOMING TRANSMISSION:</span> The 0.047 Hz signal has been isolated. It contains three layers of encrypted data Sara left behind before she vanished. You must decode all three layers — frequency patterns, a cipher, and a coordinate fragment — to uncover the truth.
+              </p>
+              <div className="briefTools">
+                <div className="briefTool">
+                  <div className="briefToolNum">01</div>
+                  <div><strong>Frequency Match</strong><p>Identify 6 waveform patterns</p></div>
+                </div>
+                <div className="briefTool">
+                  <div className="briefToolNum">02</div>
+                  <div><strong>Caesar Cipher</strong><p>Decode the encrypted message</p></div>
+                </div>
+                <div className="briefTool">
+                  <div className="briefToolNum">03</div>
+                  <div><strong>Coordinate Lock</strong><p>Reconstruct the final location</p></div>
+                </div>
+              </div>
+            </div>
+            <div className="briefObjective" style={{ borderColor:'rgba(120,80,255,0.2)' }}>
+              <div className="briefObjTitle" style={{ color:'#a78bfa' }}>Complete all 3 decryption stages to reveal Sara's final message</div>
+            </div>
+            <div className="briefActions">
+              <button className="btnContinue" style={{ borderColor:'rgba(120,80,255,0.4)', color:'#c4b5fd' }}
+                onClick={() => { goTo(S.LVL4PLAY); setTimeout(() => startTimer(S.LVL4PLAY), 400); }}>
+                Decode The Signal
+              </button>
+              <button className="btnMissions" onClick={() => goTo(S.LEVELS)}>Back to Missions</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className={`screen${screen === S.LVL4PLAY ? ' screenActive' : ''}`}>
+        <div className="sigPage">
+          <StatusBar />
+          <div className="overlayDark" />
+
+          <div className="lvlTopbar">
+            <div className="netTitleBlock">
+              <button className="backBtn" onClick={() => goTo(S.LEVELS)}>←</button>
+              <div>
+                <h1>The Final Signal</h1>
+                <p>Decode Sara's transmission — 3 stages</p>
+              </div>
+            </div>
+            <div className="lvlTopRight">
+              <div className="netCounter">
+                <span>Stage</span>
+                <strong>{lvl4Stage + 1}/3</strong>
+              </div>
+              <div className={`timerBox${timeLeft <= 30 ? ' timerDanger' : ''}`}>
+                <span>Time</span>
+                <strong>{formatTime(timeLeft)}</strong>
+              </div>
+            </div>
+          </div>
+          <div className="lvlDivider" />
+
+          <div className="sigStageBar">
+            {['Frequency Match','Caesar Cipher','Coordinate Lock'].map((label, i) => (
+              <div key={i} className={`sigStageStep${lvl4Stage > i ? ' sigStageDone' : lvl4Stage === i ? ' sigStageActive' : ''}`}>
+                <div className="sigStageNum">{lvl4Stage > i ? '✓' : i + 1}</div>
+                <span>{label}</span>
+              </div>
+            ))}
+          </div>
+
+          {lvl4Stage === 0 && (
+            <div className="sigStageContent">
+              <div className="sigStageTitle">
+                <h2>Frequency Pattern Match</h2>
+                <p>Each frequency emits a unique waveform. Match each one correctly. Wrong answers cost you time.</p>
+              </div>
+              <div className="sigFreqGrid">
+                {FREQ_PULSES.map(pulse => {
+                  const solved = freqAnswers[pulse.id] === pulse.correct;
+                  return (
+                    <div key={pulse.id} className={`sigFreqCard${solved ? ' sigFreqSolved' : ''}`}>
+                      <div className="sigFreqLabel">{pulse.label}</div>
+                      <div className="sigWavePreview">
+                        {pulse.correct === 'sine'     && <svg viewBox="0 0 80 30" fill="none"><path d="M0 15 Q10 0 20 15 Q30 30 40 15 Q50 0 60 15 Q70 30 80 15" stroke={solved?'#22c55e':'#a78bfa'} strokeWidth="2" fill="none"/></svg>}
+                        {pulse.correct === 'square'   && <svg viewBox="0 0 80 30" fill="none"><path d="M0 22 L0 8 L20 8 L20 22 L40 22 L40 8 L60 8 L60 22 L80 22" stroke={solved?'#22c55e':'#a78bfa'} strokeWidth="2" fill="none"/></svg>}
+                        {pulse.correct === 'sawtooth' && <svg viewBox="0 0 80 30" fill="none"><path d="M0 22 L20 8 L20 22 L40 8 L40 22 L60 8 L60 22 L80 8" stroke={solved?'#22c55e':'#a78bfa'} strokeWidth="2" fill="none"/></svg>}
+                        {pulse.correct === 'noise'    && <svg viewBox="0 0 80 30" fill="none"><path d="M0 15 L8 8 L14 22 L20 10 L26 20 L32 6 L38 18 L44 12 L50 24 L56 8 L62 20 L68 14 L74 22 L80 10" stroke={solved?'#22c55e':'#a78bfa'} strokeWidth="2" fill="none"/></svg>}
+                      </div>
+                      {solved ? (
+                        <div className="sigFreqCorrect">Matched</div>
+                      ) : (
+                        <div className="sigFreqOptions">
+                          {pulse.options.map(opt => (
+                            <button
+                              key={opt}
+                              className={`sigFreqOpt${freqWrong[pulse.id] === opt ? ' sigFreqWrong' : ''}`}
+                              onClick={() => handleFreqPick(pulse.id, opt)}
+                            >{opt}</button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="sigHint">Hint: Match the shape name to the waveform shown above each card.</div>
+            </div>
+          )}
+
+          {lvl4Stage === 1 && (
+            <div className="sigStageContent">
+              <div className="sigStageTitle">
+                <h2>Caesar Cipher Decode</h2>
+                <p>Sara encrypted her final message using a Caesar cipher. Each letter is shifted by 3 positions forward in the alphabet. Decode it.</p>
+              </div>
+              <div className="sigCipherBox">
+                <div className="sigCipherLabel">Encrypted Message:</div>
+                <div className="sigCipherText">{CIPHER_TEXT}</div>
+                <div className="sigCipherHint">
+                  A=D, B=E, C=F ... shift each letter <strong>back 3</strong> to decode.
+                  <br />Example: V → S, K → H, H → E
+                </div>
+                {cipherSolved ? (
+                  <div className="sigCipherSuccess">Decrypted: {CIPHER_ANSWER}</div>
+                ) : (
+                  <>
+                    <input
+                      className={`sigCipherInput${cipherError ? ' sigCipherInputError' : ''}`}
+                      placeholder="Type the decoded message in CAPS..."
+                      value={cipherInput}
+                      onChange={e => setCipherInput(e.target.value.toUpperCase())}
+                      onKeyDown={e => e.key === 'Enter' && handleCipherSubmit()}
+                    />
+                    {cipherError && <div className="sigCipherError">Incorrect. Check your shift and try again.</div>}
+                    <button className="netScanBtn" style={{ marginTop:12 }} onClick={handleCipherSubmit}>Submit Decoded Message</button>
+                  </>
+                )}
+              </div>
+            </div>
+          )}
+
+          {lvl4Stage === 2 && (
+            <div className="sigStageContent">
+              <div className="sigStageTitle">
+                <h2>Coordinate Reconstruction</h2>
+                <p>Sara's location data was fragmented. Rearrange the 5 pieces into the correct order by swapping them. The coordinates must read left to right.</p>
+              </div>
+              <div className="sigCoordBox">
+                <div className="sigCoordHint">Tap two fragments to swap them. Target: <strong>LAT 68.4471 N LON 14.2293 E</strong></div>
+                <div className="sigCoordFrags">
+                  {coordOrder.map((fragId, idx) => {
+                    const frag = COORD_FRAGS[fragId];
+                    const isCorrect = frag.pos === idx;
+                    const isSelected = dragging === idx;
+                    return (
+                      <div
+                        key={idx}
+                        className={`sigCoordFrag${isSelected ? ' sigCoordSelected' : ''}${isCorrect ? ' sigCoordCorrect' : ''}`}
+                        onClick={() => {
+                          if (dragging === null) {
+                            setDragging(idx);
+                          } else {
+                            if (dragging !== idx) moveCoord(dragging, idx);
+                            setDragging(null);
+                          }
+                        }}
+                      >
+                        {frag.text}
+                      </div>
+                    );
+                  })}
+                </div>
+                <div className="sigCoordProgress">
+                  {coordOrder.map((fragId, idx) => (
+                    <div key={idx} className={`sigCoordDot${COORD_FRAGS[fragId].pos === idx ? ' sigCoordDotOk' : ''}`} />
+                  ))}
+                </div>
+                {coordSolved && <div className="sigCipherSuccess">Coordinates locked. Signal decoded.</div>}
+              </div>
+            </div>
+          )}
+
+        </div>
+      </div>
+
+      <div className={`screen${screen === S.LVL4DONE ? ' screenActive' : ''}`}>
+        <div className="completePage">
+          <StatusBar />
+          <div className="overlayDark" />
+          <div className="completeTopbar">
+            <div><h1>Level 4: The Final Signal</h1><p>Decode Sara's transmission</p></div>
+            <div className="completeTopRight"><span>Stages Complete</span><strong>3/3</strong></div>
+          </div>
+          <div className="completeBody">
+            <div className="completeIcon" style={{ borderColor:'#a78bfa' }}>
+              <svg viewBox="0 0 24 24" fill="none" style={{ width:42, height:42 }}>
+                <polyline points="20 6 9 17 4 12" stroke="#a78bfa" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </div>
+            <h2 className="completeTitle" style={{ color:'#c4b5fd' }}>Signal Decoded!</h2>
+            <p className="completeSub">Sara's final transmission has been decrypted. The truth is out.</p>
+            <div className="completeCard" style={{ borderColor:'rgba(120,80,255,0.15)' }}>
+              <h3 style={{ color:'#c4b5fd' }}>Sara's Final Message</h3>
+              <p>"Whatever is listening. Sara found the source."</p>
+              <p>Coordinates confirmed: <strong style={{ color:'#a78bfa' }}>LAT 68.4471 N LON 14.2293 E</strong></p>
+              <p className="completeTeaser">The signal originated 847 meters below that location. Sara didn't disappear — she was taken. And now you know where.</p>
+            </div>
+            <div className="completeActions">
               <button className="btnMissions" onClick={() => goTo(S.LEVELS)}>Back to Missions</button>
             </div>
           </div>
